@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Project Godspeed</title>
+  <meta name="description" content="A space trader and combat game on a lived-in frontier. Fly, trade, take contracts, and walk your own ship.">
+  <style>
+    :root {
+      --bg: #05070d;
+      --text: #e8ecf5;
+      --muted: #8b93a7;
+      --accent: #f2a541;
+      --accent-text: #14100a;
+      --field-bg: rgba(255, 255, 255, 0.06);
+      --field-border: rgba(255, 255, 255, 0.18);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; padding: 0; }
+    body {
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+      overflow-x: hidden;
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      line-height: 1.5;
+      background-color: var(--bg);
+      background-image:
+        radial-gradient(1px 1px at 12% 18%, rgba(255,255,255,.8) 50%, transparent 51%),
+        radial-gradient(1px 1px at 78% 12%, rgba(255,255,255,.6) 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 33% 72%, rgba(255,255,255,.7) 50%, transparent 51%),
+        radial-gradient(1px 1px at 88% 64%, rgba(255,255,255,.5) 50%, transparent 51%),
+        radial-gradient(1px 1px at 56% 38%, rgba(255,255,255,.4) 50%, transparent 51%),
+        radial-gradient(1.5px 1.5px at 6% 86%, rgba(255,255,255,.6) 50%, transparent 51%),
+        radial-gradient(1px 1px at 66% 90%, rgba(255,255,255,.5) 50%, transparent 51%),
+        radial-gradient(1px 1px at 44% 8%, rgba(255,255,255,.5) 50%, transparent 51%),
+        radial-gradient(ellipse 80% 60% at 70% 110%, rgba(242,165,65,.14), transparent 70%),
+        radial-gradient(ellipse 70% 50% at 10% -10%, rgba(80,110,200,.18), transparent 70%);
+      background-attachment: fixed;
+    }
+    main {
+      width: 100%;
+      max-width: 560px;
+      text-align: center;
+    }
+    h1 {
+      margin: 0 0 16px;
+      font-size: clamp(2.2rem, 9vw, 3.6rem);
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      line-height: 1.05;
+    }
+    .tagline {
+      margin: 0 0 12px;
+      font-size: 1.125rem;
+      color: var(--text);
+    }
+    .pitch {
+      margin: 0 0 28px;
+      color: var(--muted);
+    }
+
+    /* Kit form, restyled */
+    .formkit-form { width: 100%; margin: 0 auto; }
+    .formkit-fields {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .formkit-field { flex: 1 1 220px; min-width: 0; }
+    .formkit-input {
+      width: 100%;
+      height: 48px;
+      padding: 0 14px;
+      font: inherit;
+      font-size: 16px; /* prevents iOS zoom */
+      color: var(--text);
+      background: var(--field-bg);
+      border: 1px solid var(--field-border);
+      border-radius: 8px;
+      outline: none;
+    }
+    .formkit-input::placeholder { color: var(--muted); }
+    .formkit-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(242,165,65,.25); }
+    .formkit-submit {
+      position: relative;
+      flex: 0 0 auto;
+      height: 48px;
+      padding: 0 22px;
+      font: inherit;
+      font-weight: 700;
+      color: var(--accent-text);
+      background: var(--accent);
+      border: 0;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .formkit-submit:hover { filter: brightness(1.08); }
+    .formkit-submit:focus-visible { outline: 3px solid rgba(242,165,65,.5); outline-offset: 2px; }
+    .formkit-spinner { display: none; }
+    .formkit-submit[data-active] .formkit-spinner { display: inline-block; margin-right: 6px; }
+    .formkit-spinner div {
+      display: inline-block; width: 6px; height: 6px; margin: 0 1px;
+      border-radius: 50%; background: var(--accent-text);
+      animation: pg-blink 1s infinite ease-in-out both;
+    }
+    .formkit-spinner div:nth-child(2) { animation-delay: .15s; }
+    .formkit-spinner div:nth-child(3) { animation-delay: .3s; }
+    @keyframes pg-blink { 0%, 80%, 100% { opacity: .2; } 40% { opacity: 1; } }
+    .formkit-alert { list-style: none; margin: 0 0 10px; padding: 0; }
+    .formkit-alert:empty { display: none; }
+    .formkit-alert li, .formkit-alert-success {
+      padding: 10px 14px; border-radius: 8px; font-size: .95rem;
+    }
+    .formkit-alert-error li { background: rgba(220,60,60,.15); border: 1px solid rgba(220,60,60,.4); }
+    .formkit-alert-success { display: block; background: rgba(60,200,120,.12); border: 1px solid rgba(60,200,120,.4); }
+    .formkit-powered-by-convertkit-container { margin-top: 10px; }
+    .formkit-powered-by-convertkit { font-size: .75rem; color: var(--muted); text-decoration: none; }
+
+    .smallprint {
+      margin: 18px 0 0;
+      font-size: .85rem;
+      color: var(--muted);
+    }
+    .smallprint a { color: var(--muted); text-decoration: underline; }
+    .smallprint a:hover { color: var(--text); }
+
+    @media (max-width: 420px) {
+      .formkit-submit { flex: 1 1 100%; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Project Godspeed</h1>
+    <p class="tagline">A space trader and combat game on a lived-in frontier. Fly, trade, take contracts, and walk your own ship.</p>
+    <p class="pitch">Get devlog updates, the free demo, and the Steam page the day it goes live.</p>
+
+    <!-- Kit form: Project Godspeed – Signup (HTML embed, Kit's inline styles replaced by the CSS above) -->
+    <script src="https://f.convertkit.com/ckjs/ck.5.js"></script>
+    <form action="https://app.kit.com/forms/10121367/subscriptions" class="seva-form formkit-form" method="post"
+          data-sv-form="10121367" data-uid="87f8f95744" data-format="inline" data-version="5"
+          data-options='{"settings":{"after_subscribe":{"action":"message","success_message":"Success! Now check your email to confirm your subscription.","redirect_url":""},"analytics":{"google":null,"fathom":null,"facebook":null,"segment":null,"pinterest":null,"sparkloop":null,"googletagmanager":null},"modal":{"trigger":"timer","scroll_percentage":null,"timer":5,"devices":"all","show_once_every":15},"powered_by":{"show":true,"url":"https://kit.com/features/forms?utm_campaign=poweredby&utm_content=form&utm_medium=referral&utm_source=dynamic"},"recaptcha":{"enabled":false},"return_visitor":{"action":"show","custom_content":""},"slide_in":{"display_in":"bottom_right","trigger":"timer","scroll_percentage":null,"timer":5,"devices":"all","show_once_every":15},"sticky_bar":{"display_in":"top","trigger":"timer","scroll_percentage":null,"timer":5,"devices":"all","show_once_every":15}},"version":"5"}'>
+      <div data-style="clean">
+        <ul class="formkit-alert formkit-alert-error" data-element="errors" data-group="alert"></ul>
+        <div data-element="fields" data-stacked="false" class="seva-fields formkit-fields">
+          <div class="formkit-field">
+            <input class="formkit-input" name="email_address" aria-label="Email address" placeholder="Email address" required type="email" autocomplete="email">
+          </div>
+          <button data-element="submit" class="formkit-submit">
+            <div class="formkit-spinner"><div></div><div></div><div></div></div>
+            <span>Subscribe</span>
+          </button>
+        </div>
+        <div class="formkit-powered-by-convertkit-container">
+          <a href="https://kit.com/features/forms?utm_campaign=poweredby&amp;utm_content=form&amp;utm_medium=referral&amp;utm_source=dynamic" data-element="powered-by" class="formkit-powered-by-convertkit" data-variant="dark" target="_blank" rel="nofollow noopener">Built with Kit</a>
+        </div>
+      </div>
+    </form>
+
+    <p class="smallprint">One email when there's real news. Unsubscribe anytime. <a href="https://kit.com/privacy" target="_blank" rel="noopener">Privacy policy (Kit)</a></p>
+  </main>
+</body>
+</html>
